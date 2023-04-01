@@ -31,4 +31,3 @@ def checking_the_knowledge_of_hieroglyphs(k):
 
 if __name__ == "__main__":
     checking_the_knowledge_of_hieroglyphs(3)
-   
