@@ -18,40 +18,41 @@ def chinese_russian_dict():
     return chinese_russian_dict
 
 
-def checking_the_knowledge_of_hieroglyphs(number_of_words_to_study):
-    worker_chinese_russian_dict = chinese_russian_dict()
+def getting_the_list_under_study(number_of_words_to_study):
+    chinese_russian_dictionary = read("remaining_words.json")
+    if len(chinese_russian_dictionary) == 0:
+        chinese_russian_dictionary = chinese_russian_dict()
+    while chinese_russian_dictionary:
+        list_of_words = list(chinese_russian_dictionary.items())
+        list_of_hieroglyphs_with_translation = sample(list_of_words, number_of_words_to_study)
+        studied_hieroglyphs_with_translation = {}
+        for hieroglyph,translation in dict(list_of_hieroglyphs_with_translation).items():
+            studied_hieroglyphs_with_translation[hieroglyph] = translation
+            if hieroglyph in chinese_russian_dictionary:
+                del chinese_russian_dictionary[hieroglyph]  # полученный для изучения словарь удаляем по ключу из общего словаря. что бы не получать повторно изученного материала
+                write(chinese_russian_dictionary, "remaining_words.json")
+        return studied_hieroglyphs_with_translation
+
+
+def word_knowledge_test():
     learned_hieroglyphs = {}
     if len(learned_hieroglyphs) == 0:
         learned_hieroglyphs = read("studied_words.json")
-        for deleted_hieroglyphs, deleted_translation in dict(learned_hieroglyphs).items():
-            del worker_chinese_russian_dict[deleted_hieroglyphs]
-    print(len(worker_chinese_russian_dict))
-    print(learned_hieroglyphs)        
-    while worker_chinese_russian_dict:
-        list_of_words = list(worker_chinese_russian_dict.items())
-        list_of_hieroglyphs_with_translation = sample(list_of_words, number_of_words_to_study)  
-        studied_hieroglyphs_with_translation = {}
-        for hieroglyph,translation in dict(list_of_hieroglyphs_with_translation).items():  
-            studied_hieroglyphs_with_translation[hieroglyph] = translation
-            if hieroglyph in worker_chinese_russian_dict:
-                del worker_chinese_russian_dict[hieroglyph]  # полученный для изучения словарь удаляем по ключу из общего словаря. что бы не получать повторно изученные слова
-                write(worker_chinese_russian_dict, "remaining_words.json")
-        print(f"Изучаемые слова: {studied_hieroglyphs_with_translation}")
-        while studied_hieroglyphs_with_translation:
-            studied_hieroglyph, studied_translation = choice(list(studied_hieroglyphs_with_translation.items()))
-            transfer_request = input(f"Введите перевод {studied_hieroglyph} ")
-            if transfer_request in studied_translation:
-                print("Верно")
-                learned_hieroglyphs[studied_hieroglyph] = studied_translation
-                write(learned_hieroglyphs, "studied_words.json")
-                del studied_hieroglyphs_with_translation[studied_hieroglyph]
-                print(learned_hieroglyphs)
-            else:
-                print(f'Не верно! правильный ответ : "{translation}"')
-            
-         
+    studied_words =  getting_the_list_under_study(5)
+    while studied_words:
+        print(f"Изучаемые слова {studied_words}")
+        studied_hieroglyph, studied_translation = choice(list(studied_words.items()))
+        transfer_request = input(f"Введите перевод {studied_hieroglyph} ")
+        if transfer_request in studied_translation:
+            print("Верно")
+            learned_hieroglyphs[studied_hieroglyph] = studied_translation        
+            write(learned_hieroglyphs, "studied_words.json")
+            del studied_words[studied_hieroglyph]
+            if len(studied_words) == 0:
+                studied_words = getting_the_list_under_study(5)
+        else:
+            print(f'Не верно! правильный ответ : "{studied_translation}"')
+
+
 if __name__ == "__main__":
-    checking_the_knowledge_of_hieroglyphs(3)    
-    
-
-
+    word_knowledge_test()
