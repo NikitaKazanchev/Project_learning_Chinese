@@ -1,6 +1,7 @@
 from random import sample, choice
 from dictionary_of_hieroglyphs import CHINESE_RUSSIAN_DICTIONARY
 import json
+from config import EXERCISE_LENGHT_WORDS, STUDIED_WORDS
 
 
 def write(data, filename):
@@ -18,38 +19,37 @@ def chinese_russian_dict():
     return chinese_russian_dict
 
 
-def getting_the_list_under_study(number_of_words_to_study):
-    chinese_russian_dictionary = read("remaining_words.json")
-    if len(chinese_russian_dictionary) == 0:
-        chinese_russian_dictionary = chinese_russian_dict()
+def getting_the_list_under_study():
+    chinese_russian_dictionary = chinese_russian_dict()
+    learned_hieroglyphs = read(STUDIED_WORDS)
+    if learned_hieroglyphs:
+        for hieroglyph, translation in dict(learned_hieroglyphs).items():
+            del chinese_russian_dictionary[hieroglyph]    
     while chinese_russian_dictionary:
         list_of_words = list(chinese_russian_dictionary.items())
-        list_of_hieroglyphs_with_translation = sample(list_of_words, number_of_words_to_study)
+        list_of_hieroglyphs_with_translation = sample(list_of_words, EXERCISE_LENGHT_WORDS)
         studied_hieroglyphs_with_translation = {}
-        for hieroglyph,translation in dict(list_of_hieroglyphs_with_translation).items():
+        for hieroglyph, translation in dict(list_of_hieroglyphs_with_translation).items():
             studied_hieroglyphs_with_translation[hieroglyph] = translation
             if hieroglyph in chinese_russian_dictionary:
                 del chinese_russian_dictionary[hieroglyph]  # полученный для изучения словарь удаляем по ключу из общего словаря. что бы не получать повторно изученного материала
-                write(chinese_russian_dictionary, "remaining_words.json")
+        print(len(chinese_russian_dictionary))
         return studied_hieroglyphs_with_translation
 
 
 def word_knowledge_test():
     learned_hieroglyphs = {}
-    if len(learned_hieroglyphs) == 0:
-        learned_hieroglyphs = read("studied_words.json")
-    studied_words =  getting_the_list_under_study(5)
+    learned_hieroglyphs = read(STUDIED_WORDS)
+    studied_words =  getting_the_list_under_study()
     while studied_words:
         print(f"Изучаемые слова {studied_words}")
         studied_hieroglyph, studied_translation = choice(list(studied_words.items()))
-        transfer_request = input(f"Введите перевод {studied_hieroglyph} ")
-        if transfer_request in studied_translation:
+        translate_request = input(f"Введите перевод {studied_hieroglyph} ")
+        if translate_request == studied_translation:
             print("Верно")
             learned_hieroglyphs[studied_hieroglyph] = studied_translation        
-            write(learned_hieroglyphs, "studied_words.json")
+            write(learned_hieroglyphs, STUDIED_WORDS)
             del studied_words[studied_hieroglyph]
-            if len(studied_words) == 0:
-                studied_words = getting_the_list_under_study(5)
         else:
             print(f'Не верно! правильный ответ : "{studied_translation}"')
 
