@@ -1,2 +1,2 @@
 EXERCISE_LENGHT_WORDS = 5
-STUDIED_WORDS = "studied_words.json"
+STUDIED_WORDS = 'studied_words.json'

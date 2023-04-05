@@ -23,8 +23,8 @@ def getting_the_list_under_study():
     chinese_russian_dictionary = chinese_russian_dict()
     learned_hieroglyphs = read(STUDIED_WORDS)
     if learned_hieroglyphs:
-        for hieroglyph, translation in dict(learned_hieroglyphs).items():
-            del chinese_russian_dictionary[hieroglyph]    
+        for studied_hieroglyph, studied_translation in dict(learned_hieroglyphs).items():
+            del chinese_russian_dictionary[studied_hieroglyph]    
     while chinese_russian_dictionary:
         list_of_words = list(chinese_russian_dictionary.items())
         list_of_hieroglyphs_with_translation = sample(list_of_words, EXERCISE_LENGHT_WORDS)
