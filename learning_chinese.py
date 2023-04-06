@@ -15,7 +15,7 @@ def read(filename):
        
 
 def chinese_russian_dict():
-    chinese_russian_dict = CHINESE_RUSSIAN_DICTIONARY.copy()  # копируем словарь для работы с ним и сохранением оригинала
+    chinese_russian_dict = CHINESE_RUSSIAN_DICTIONARY.copy()  #копируем словарь для работы с ним и сохранением оригинала
     return chinese_russian_dict
 
 
@@ -32,9 +32,14 @@ def getting_the_list_under_study():
         for hieroglyph, translation in dict(list_of_hieroglyphs_with_translation).items():
             studied_hieroglyphs_with_translation[hieroglyph] = translation
             if hieroglyph in chinese_russian_dictionary:
+<<<<<<< HEAD
                 del chinese_russian_dictionary[hieroglyph]  # полученный для изучения словарь удаляем по ключу из общего словаря. что бы не получать повторно изученного материала
         print(len(chinese_russian_dictionary))
         return studied_hieroglyphs_with_translation
+=======
+                del chinese_russian_dictionary[hieroglyph]  #полученный для изучения словарь удаляем по ключу из общего словаря. что бы не получать повторно изученного материала
+        return list_of_hieroglyphs_with_translation
+>>>>>>> 03cb8dd0bf724519944ae4ebd79bdfe7c5b22e71
 
 
 def word_knowledge_test():
