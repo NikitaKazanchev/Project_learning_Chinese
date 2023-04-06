@@ -28,9 +28,7 @@ def getting_the_list_under_study():
     while chinese_russian_dictionary:
         list_of_words = list(chinese_russian_dictionary.items())
         list_of_hieroglyphs_with_translation = sample(list_of_words, NUMBER_OF_WORDS_TO_STUDY)
-        studied_hieroglyphs_with_translation = {}
         for hieroglyph, translation in dict(list_of_hieroglyphs_with_translation).items():
-            studied_hieroglyphs_with_translation[hieroglyph] = translation
             if hieroglyph in chinese_russian_dictionary:
                 del chinese_russian_dictionary[hieroglyph]  #полученный для изучения словарь удаляем по ключу из общего словаря. что бы не получать повторно изученного материала
         return list_of_hieroglyphs_with_translation
