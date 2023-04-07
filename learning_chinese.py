@@ -30,10 +30,10 @@ def getting_the_list_under_study():
         list_of_hieroglyphs_with_translation = sample(list_of_words, NUMBER_OF_WORDS_TO_STUDY)
         for hieroglyph, translation in dict(list_of_hieroglyphs_with_translation).items():
             if hieroglyph in chinese_russian_dictionary:
-                del chinese_russian_dictionary[hieroglyph]  #полученный для изучения словарь удаляем по ключу из общего словаря. что бы не получать повторно изученного материала
+                #полученный для изучения словарь удаляем по ключу из общего словаря.
+                #что бы не получать повторно изученного материала.
+                del chinese_russian_dictionary[hieroglyph]  
         return list_of_hieroglyphs_with_translation
-
-
 
 
 def word_knowledge_test():
