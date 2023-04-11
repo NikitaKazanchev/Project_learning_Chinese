@@ -1,10 +1,13 @@
 from random import sample
 from dictionary_of_hieroglyphs import CHINESE_RUSSIAN_DICTIONARY
 import json
-from config import NUMBER_OF_WORDS_TO_STUDY, STUDIED_WORDS, REPET_THE_WORDS
+from config import NUMBER_OF_WORDS_TO_STUDY, STUDIED_WORDS, REPET_THE_WORDS, PROGRESS_BAR
 from rich.console import Console
 from rich.theme import Theme
 from rich.table import Table
+from os import path as osp
+import zipfile
+from progress.bar import IncrementalBar
 
 def write(data, filename):
     with open(filename, "w", encoding="utf-8") as file:
@@ -13,20 +16,32 @@ def write(data, filename):
 
 def read(filename):
     with open(filename, "r", encoding="utf-8") as file:
-       return json.load(file)
+        return json.load(file)
        
 
-def adding_a_style():
+def writing_progressbar(data,filename: str):
+    with open (filename, "w") as f_obj:
+            f_obj.write(data)    
+        
+
+def reading_progressbar(filenames: str):
+    for filename in filenames:
+        with open(filename, "r") as f_obj:
+            return f_obj.write(f_obj)
+
+
+def text_output_style():
     custom_theme = Theme({
-    "good" : "green",
-    "bad": "bold red",
-    "text": "blue",
-    "dict": "dark_orange3",
+        "good" : "green",
+        "bad": "bold red",
+        "text": "blue",
+        "dict": "dark_orange3",
     })
     console = Console(theme=custom_theme)
     return console
 
-def table(the_dictionary_being_studied):
+
+def framing_the_table(the_dictionary_being_studied):
     hieroglyphs_with_translation = dict(the_dictionary_being_studied)
     table = Table(title="[dark_orange3]Изучаемые слова[/dark_orange3]")
     table.add_column("[blue]Иероглиф[/blue]", style="cyan")
@@ -65,18 +80,24 @@ def word_knowledge_test():
     studied_words =  dict(getting_the_list_under_study())
     words_to_repeat = read(REPET_THE_WORDS)
     studied_words.update(words_to_repeat)
-    style_text = adding_a_style()
-    style_text.print(table(studied_words))
+    style_text = text_output_style()
+    style_text.print(framing_the_table(studied_words))
+    pbar = IncrementalBar('Прогресс', max=len(chinese_russian_dict()))
+    reading_progressbar(PROGRESS_BAR)
     for studied_hieroglyph, studied_translation in studied_words.items():
         translate_request = style_text.input(f"[text]Введите перевод[/text] [dict]{studied_hieroglyph}[/dict] ")
         if translate_request == studied_translation:
             style_text.print("Верно :thumbs_up:", style="good")
             learned_hieroglyphs[studied_hieroglyph] = studied_translation        
             write(learned_hieroglyphs, STUDIED_WORDS)
+            pbar.next()
+            pbar.finish()
+            writing_progressbar(pbar, PROGRESS_BAR)
         else:
             style_text.print(f'[bad]Не верно![/bad] [text]правильный ответ :[/text] [dict]"{studied_translation}"[/dict]')
             words_to_repeat[studied_hieroglyph] = studied_translation
             write(words_to_repeat, REPET_THE_WORDS)
+           
 
 if __name__ == "__main__":
     word_knowledge_test()
