@@ -25,10 +25,7 @@
 
 import random
 import json
-
-path_to_data = r'C:\projects\projects_china_site\data.json'
-path_to_learned = r'C:\projects\projects_china_site\learned.json'
-path_to_not_learned = r'C:\projects\projects_china_site\notlearned.json'
+from config import PATH_TO_DATA, PATH_TO_LEARNED, PATH_TO_NOT_LEARNED
 
 def open_json(path_to_file):
     try:
@@ -38,42 +35,53 @@ def open_json(path_to_file):
             data = []
     return data
 
-def get_data(hieroglyphs_dict_in_list):
-    item = random.choice(hieroglyphs_dict_in_list)
-    return item
+def get_hieroglyphs_dict(hieroglyphs_dict_in_list):
+    return random.choice(hieroglyphs_dict_in_list)
 
 def decompose(item):
-    hieroglyph = item.get('иероглиф',{})
-    translation = item.get('перевод',{})
+    hieroglyph = item['иероглиф']
+    translation = item['перевод']
     return hieroglyph, translation
 
-def save(item, lists_of_hieroglyphs, path_to_file):
-    lists_of_hieroglyphs.append(item)
+def save(lists_of_hieroglyphs, path_to_file, item=''):
+    if item:
+        lists_of_hieroglyphs.append(item)
     with open(path_to_file, 'w', encoding='utf-8') as json_file:
-        json.dump(lists_of_hieroglyphs, json_file)
+        json.dump(lists_of_hieroglyphs, json_file, ensure_ascii=False)
     
+if __name__ == '__main__':
 
-hieroglyphs_dict_in_list = open_json(path_to_data)
-learned = open_json(path_to_learned)
-not_learned = open_json(path_to_not_learned)
-counter = 5
-while counter:
-    item = get_data(hieroglyphs_dict_in_list)
-    hieroglyph, translation = decompose(item)
-    if hieroglyph in learned:
-        continue
-    counter -= 1
-    print(hieroglyph) 
-    is_show_translate = input('Нажми Enter, чтобы увидеть перевод иероглифа: ')
-    if is_show_translate == '':
-        print(translation)
+    hieroglyphs_dict_in_list = open_json(PATH_TO_DATA)
+    learned = open_json(PATH_TO_LEARNED)
+    not_learned = open_json(PATH_TO_NOT_LEARNED)
+    for card_number in range(4):
+        item = get_hieroglyphs_dict(hieroglyphs_dict_in_list)
+        hieroglyph, translation = decompose(item)
+        print(hieroglyph) 
+        is_show_translate = input('Нажми Enter, чтобы увидеть перевод иероглифа: ')
+        if is_show_translate == '':
+            print(translation)
         is_user_learned = input('Выучил?: ')
         if is_user_learned == 'Да':
-            save(item, learned, path_to_learned)
+            save(learned, PATH_TO_LEARNED, item)
         else:
-            save(item, not_learned, path_to_not_learned)
+            save(not_learned, PATH_TO_NOT_LEARNED, item)
+        hieroglyphs_dict_in_list.pop(hieroglyphs_dict_in_list.index(item))
+        save(hieroglyphs_dict_in_list, PATH_TO_DATA)
 
+    print('Мы закончили ежедневное изучение, теперь повторим не выученные иероглифы')
 
-
-
-
+    still_not_learned = []
+    for not_learnead_card in not_learned:
+        hieroglyph, translation = decompose(not_learnead_card)
+        print(hieroglyph)
+        is_show_translate = input('Нажми Enter, чтобы увидеть перевод иероглифа: ')
+        if is_show_translate == '':
+            print(translation)
+            is_user_learned = input('Выучил?: ')
+            if is_user_learned == 'Да':
+                save(learned, PATH_TO_LEARNED, not_learnead_card)
+            else:
+                still_not_learned.append(not_learnead_card)
+    
+    save(still_not_learned, PATH_TO_NOT_LEARNED)
