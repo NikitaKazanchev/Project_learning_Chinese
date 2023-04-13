@@ -2,6 +2,7 @@ from random import sample
 from dictionary_of_hieroglyphs import CHINESE_RUSSIAN_DICTIONARY
 import json
 from config import NUMBER_OF_WORDS_TO_STUDY, STUDIED_WORDS, REPET_THE_WORDS
+from appearance import process_data, text_output_style, framing_the_table
 
 
 def write(data, filename):
@@ -11,7 +12,7 @@ def write(data, filename):
 
 def read(filename):
     with open(filename, "r", encoding="utf-8") as file:
-       return json.load(file)
+        return json.load(file)
        
 
 def chinese_russian_dict():
@@ -43,17 +44,20 @@ def word_knowledge_test():
     studied_words =  dict(getting_the_list_under_study())
     words_to_repeat = read(REPET_THE_WORDS)
     studied_words.update(words_to_repeat)
-    print(f"Изучаемые слова {studied_words}")
+    style_text = text_output_style()
+    style_text.print(framing_the_table(studied_words))
     for studied_hieroglyph, studied_translation in studied_words.items():
-        translate_request = input(f"Введите перевод {studied_hieroglyph} ")
+        translate_request = style_text.input(f"[text]Введите перевод[/text] [dict]{studied_hieroglyph}[/dict] ")
         if translate_request == studied_translation:
-            print("Верно")
+            style_text.print("Верно :thumbs_up:", style="good")
             learned_hieroglyphs[studied_hieroglyph] = studied_translation        
             write(learned_hieroglyphs, STUDIED_WORDS)
+            process_data(learned_hieroglyphs, len(chinese_russian_dict()))       
         else:
-            print(f'Не верно! правильный ответ : "{studied_translation}"')
+            style_text.print(f'[bad]Не верно! Правильный ответ :[/bad] [dict]"{studied_translation}"[/dict]')
             words_to_repeat[studied_hieroglyph] = studied_translation
             write(words_to_repeat, REPET_THE_WORDS)
+            process_data(learned_hieroglyphs, len(chinese_russian_dict()))
 
 if __name__ == "__main__":
     word_knowledge_test()
