@@ -2,7 +2,7 @@ from random import sample
 from dictionary_of_hieroglyphs import CHINESE_RUSSIAN_DICTIONARY
 import json
 from config import NUMBER_OF_WORDS_TO_STUDY, STUDIED_WORDS, REPET_THE_WORDS
-from appearance import *
+from appearance import process_data, text_output_style, framing_the_table
 
 
 def write(data, filename):
@@ -54,7 +54,7 @@ def word_knowledge_test():
             write(learned_hieroglyphs, STUDIED_WORDS)
             process_data(learned_hieroglyphs, len(chinese_russian_dict()))       
         else:
-            style_text.print(f'[bad]Не верно![/bad] [text]правильный ответ :[/text] [dict]"{studied_translation}"[/dict]')
+            style_text.print(f'[bad]Не верно! Правильный ответ :[/bad] [dict]"{studied_translation}"[/dict]')
             words_to_repeat[studied_hieroglyph] = studied_translation
             write(words_to_repeat, REPET_THE_WORDS)
             process_data(learned_hieroglyphs, len(chinese_russian_dict()))
