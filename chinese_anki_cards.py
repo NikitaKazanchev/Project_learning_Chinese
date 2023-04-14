@@ -50,7 +50,6 @@ def save(lists_of_hieroglyphs, path_to_file, item=''):
         json.dump(lists_of_hieroglyphs, json_file, ensure_ascii=False)
     
 if __name__ == '__main__':
-
     hieroglyphs_dict_in_list = open_json(PATH_TO_DATA)
     learned = open_json(PATH_TO_LEARNED)
     not_learned = open_json(PATH_TO_NOT_LEARNED)
