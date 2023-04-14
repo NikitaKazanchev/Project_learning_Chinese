@@ -25,7 +25,7 @@
 
 import random
 import json
-from config import PATH_TO_DATA, PATH_TO_LEARNED, PATH_TO_NOT_LEARNED
+from config import PATH_TO_DATA, PATH_TO_LEARNED, PATH_TO_NOT_LEARNED 
 
 def open_json(path_to_file):
     try:
@@ -53,7 +53,7 @@ if __name__ == '__main__':
     hieroglyphs_dict_in_list = open_json(PATH_TO_DATA)
     learned = open_json(PATH_TO_LEARNED)
     not_learned = open_json(PATH_TO_NOT_LEARNED)
-    for card_number in range(4):
+    for card_number in range(5):
         item = get_hieroglyphs_dict(hieroglyphs_dict_in_list)
         hieroglyph, translation = decompose(item)
         print(hieroglyph) 
@@ -65,12 +65,15 @@ if __name__ == '__main__':
             save(learned, PATH_TO_LEARNED, item)
         else:
             save(not_learned, PATH_TO_NOT_LEARNED, item)
-        hieroglyphs_dict_in_list.pop(hieroglyphs_dict_in_list.index(item))
+        hieroglyphs_dict_in_list.pop(hieroglyphs_dict_in_list.index(item)) # команда pop удаляет выученые и не выученные иероглифы по индексу из словаря
         save(hieroglyphs_dict_in_list, PATH_TO_DATA)
 
-    print('Мы закончили ежедневное изучение, теперь повторим не выученные иероглифы')
+    print('Мы закончили ежедневное изучение!')
 
-    still_not_learned = []
+    if not_learned:
+        print('Теперь повторим не выученные иероглифы:')
+
+    still_not_learned = [] # доп.список для того, чтобы невыученные иероглифы не повторялись в списке not_learned
     for not_learnead_card in not_learned:
         hieroglyph, translation = decompose(not_learnead_card)
         print(hieroglyph)
